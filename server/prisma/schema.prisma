@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum day {
+  Sunday
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+}
+
+model User {
+  id         String   @id @default(uuid())
+  firstName  String
+  middleName String?
+  lastName   String
+  email      String   @unique
+  location   String
+  Age        Int
+  Gender     Gender
+  password   String
+  Todo       Todo[]
+  created_AT DateTime @default(now())
+  updated_AT DateTime @updatedAt
+}
+
+model Todo {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  date        DateTime
+  day         day?
+  title       String
+  description String
+  isCompleted Boolean?  @default(false)
+  created_AT  DateTime @default(now())
+  updated_AT  DateTime @updatedAt
+}
