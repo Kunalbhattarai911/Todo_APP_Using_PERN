@@ -221,6 +221,58 @@ export const updateTodo = async (req, res) => {
   }
 };
 
+//mark as complete 
+export const markTaskAsComplete = async (req,res) => {
+  try {
+    const userId = req.user.id;
+    const todoId = req.params.id
+
+    const list = await prisma.todo.findFirst({
+      where : {
+        user_id : String(userId),
+        id : String(todoId)
+      }
+    })
+
+    if(!list) {
+      return res.status(404).json({
+        message : "List Not Found",
+        success : false
+      })
+    }
+
+    //check if the task is complete or not
+    if(list.isCompleted) {
+      return res.status(200).json({
+        message : "Task Is Already Completed",
+        success : true
+      })
+    }
+
+    const changeStatus = await prisma.todo.update({
+      where : {
+        id : String(todoId)
+      },
+      data : {
+        isCompleted : true
+      }
+    })
+
+    return res.status(201).json({
+      message : "Task Marked As Complete",
+      success : true,
+      data : changeStatus
+    })
+  } catch (error) {
+    console.error("Error Changing Status Of Task:", error);
+    return res.status(500).json({
+      message : "Internal Server Error",
+      success : false,
+      error : error.message
+    })
+  }
+}
+
 //delete todo list
 export const deleteList = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 import express from "express"
 import { isUserAuthenticated } from "../middleware/isUserAuthenciated.js";
-import { addTodo, deleteList, getList, getLists, searchList, updateTodo } from "../controller/todo.controller.js";
+import { addTodo, deleteList, getList, getLists, markTaskAsComplete, searchList, updateTodo } from "../controller/todo.controller.js";
 
 const router = express.Router();
 
@@ -15,6 +15,9 @@ router.get("/get/:id", isUserAuthenticated, getList)
 
 //update the list by id when authenticated
 router.put("/update/:id", isUserAuthenticated, updateTodo)
+
+//mark as true to task
+router.put("/updateTask/:id", isUserAuthenticated, markTaskAsComplete)
 
 //delete the list by id
 router.delete("/delete/:id", isUserAuthenticated, deleteList)
